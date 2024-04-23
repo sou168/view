@@ -15,10 +15,17 @@ class ViewName
         $delimiter = ViewFinderInterface::HINT_PATH_DELIMITER;
 
         if (! str_contains($name, $delimiter)) {
-            return str_replace('/', '.', $name);
+            return str_replace('/', '.', self::checkLangClientType($name));
         }
 
         [$namespace, $name] = explode($delimiter, $name);
+
+        return $namespace.$delimiter.str_replace('/', '.', self::checkLangClientType($name));
+    }
+
+
+    public static function checkLangClientType($name)
+    {
         if ($_SERVER['MULTI_VIEW'] && strtolower($_SERVER['MULTI_VIEW']) != 'false') {
             if ($_SERVER['MULTI_LANG'] && $_SERVER['LANG']) {
                 $name = $_SERVER['LANG']. '.' .$name;
@@ -28,6 +35,7 @@ class ViewName
             $name .= '.' .$_SERVER['CLIENT_TYPE'];
         }
 
-        return $namespace.$delimiter.str_replace('/', '.', $name);
+        return $name;
     }
+    
 }
